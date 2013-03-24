@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.jccrosby.analytics.segmentio.AnalyticsClient"/>
+    <classEntry path="test.jccrosby.analytics.segmentio.TestAnalyticsClient"/>
+    <classEntry path="com.jccrosby.analytics.segmentio.Context"/>
+    <classEntry path="test.jccrosby.analytics.segmentio.TestContext"/>
+    <classEntry path="com.jccrosby.analytics.segmentio.Traits"/>
+    <classEntry path="test.jccrosby.analytics.segmentio.TestTraits"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
