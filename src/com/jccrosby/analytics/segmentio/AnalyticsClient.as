@@ -9,8 +9,13 @@ package com.jccrosby.analytics.segmentio
 	import flash.net.URLRequest;
 	import flash.net.URLRequestHeader;
 	import flash.net.URLRequestMethod;
+	import flash.system.Security;
 	
 	import mx.collections.ArrayCollection;
+	
+	[Event(name="complete", type="flash.events.Event")]
+	[Event(name="ioError", type="flash.events.IOErrorEvent")]
+	[Event(name="securityError", type="flash.events.SecurityErrorEvent")]
 	
 	public class AnalyticsClient extends EventDispatcher
 	{
@@ -21,6 +26,8 @@ package com.jccrosby.analytics.segmentio
 		
 		public function AnalyticsClient(secret:String)
 		{
+			Security.loadPolicyFile("https://api.segment.io/crossdomain.xml");
+			
 			if(_secret == "")
 				throw new Error("Secret is required.");
 			
@@ -62,7 +69,7 @@ package com.jccrosby.analytics.segmentio
 				throw new Error("Either userID or sessionID is required.");
 			
 			if(userID)
-				data.userID = userID
+				data.userId = userID
 				
 			if(traits)
 				data.traits = traits;
@@ -71,7 +78,7 @@ package com.jccrosby.analytics.segmentio
 				data.timestamp = timestamp;
 			
 			if(sessionID)
-				data.sessionID = sessionID;
+				data.sessionId = sessionID;
 			
 			if(context)
 				data.context = context;
@@ -79,7 +86,7 @@ package com.jccrosby.analytics.segmentio
 			var req:URLRequest = new URLRequest();
 			req.method = URLRequestMethod.POST;
 			var contentType:URLRequestHeader = new URLRequestHeader("Content-Type", "application/json");
-			req.requestHeaders.push(contentType);
+			req.requestHeaders = [contentType];
 			req.data = JSON.stringify(data);
 			req.url = "https://api.segment.io/v1/identify";
 			
@@ -89,13 +96,16 @@ package com.jccrosby.analytics.segmentio
 		private function _buildTrackRequest(event:String, properties:Object=null, userID:String=null, sessionID:String=null, context:Context=null, timestamp:Date=null):URLRequest
 		{
 			var data:Object = {};
+			
+			data.event = event;
+			
 			data.secret = _secret;
 			
 			if(!userID && !sessionID)
 				throw new Error("Either userID or sessionID is required.");
 			
 			if(userID)
-				data.userID = userID
+				data.userId = userID
 			
 			if(properties)
 				data.traits = properties;
@@ -104,17 +114,18 @@ package com.jccrosby.analytics.segmentio
 				data.timestamp = timestamp;
 			
 			if(sessionID)
-				data.sessionID = sessionID;
+				data.sessionId = sessionID;
 			
 			if(context)
 				data.context = context;
 			
 			var req:URLRequest = new URLRequest();
 			req.method = URLRequestMethod.POST;
+			req.contentType = "application/json";
 			var contentType:URLRequestHeader = new URLRequestHeader("Content-Type", "application/json");
-			req.requestHeaders.push(contentType);
-			req.data = JSON.stringify(data);
-			req.url = "https://api.segment.io/v1/track";
+			req.requestHeaders = [contentType];
+ 			req.data = JSON.stringify(data);
+			req.url = "http://api.segment.io/v1/track";
 			
 			return req; 
 		}
@@ -136,19 +147,22 @@ package com.jccrosby.analytics.segmentio
 		protected function onLoaderComplete(event:Event):void
 		{
 			trace("Call complete");
-			_checkQueue();	
+			_checkQueue();
+			dispatchEvent(event.clone());
 		}
 		
 		protected function onLoaderIOError(event:IOErrorEvent):void
 		{
 			trace("IOErrorEvent", event.errorID, event.text);
 			_checkQueue();	
+			dispatchEvent(event.clone());
 		}
 		
 		protected function onLoaderSecurityError(event:SecurityErrorEvent):void
 		{
 			trace("SecurityErrorEvent", event.errorID, event.text);
 			_checkQueue();	
+			dispatchEvent(event.clone());
 		}
 	}
 }

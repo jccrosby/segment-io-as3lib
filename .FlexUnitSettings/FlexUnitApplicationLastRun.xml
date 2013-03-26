@@ -2,9 +2,8 @@
 <testrun name="" >
 <testsuite  name="Default Test Suite" project="segment-io-lib">
 <testsuite name="test.jccrosby.analytics.segmentio:TestAnalyticsClient" type="testcaseclass">
-<testcase name="testTrack" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
-<testcase name="testUserIDIdentify" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
-<testcase name="testAnalyticsClient" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
+<testcase name="testSessionIDIdentify" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
+<testcase name="testSessionIDTrack" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
 </testsuite>
 </testsuite>
 <portNumber value="8765" />

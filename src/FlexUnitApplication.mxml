@@ -16,9 +16,8 @@
 			{
 				var testsToRun:Array = new Array();
 				
-				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestAnalyticsClient,["testUserIDIdentify",
-					"testAnalyticsClient",
-					"testTrack"]));
+				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestAnalyticsClient,["testSessionIDIdentify",
+					"testSessionIDTrack"]));
 				return testsToRun;
 			}
 			
