@@ -6,7 +6,7 @@ package com.jccrosby.analytics.segmentio
 	public class Context
 	{
 		private var _providers:Object
-		private var _all:Boolean;
+		private var _all:Boolean = true;
 		public var bitdeli:Boolean;
 		public var chartbeat:Boolean;
 		public var clicky:Boolean;

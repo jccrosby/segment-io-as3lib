@@ -17,17 +17,22 @@ package test.jccrosby.analytics.segmentio
 	{		
 		private var _client:AnalyticsClient;
 		private var _secret:String = "qjicu7iwubdcvax5uca8";
+		private var _sessionID:String;
+		private var _callCount:int = 0;
 		
 		[Before]
 		public function setUp():void
 		{
 			_client = new AnalyticsClient(_secret);
+			_sessionID = new Date().dateUTC.toString();
 		}
 		
 		[After]
 		public function tearDown():void
 		{
 			_client = null;
+			_sessionID = null;
+			_callCount = 0;
 		}
 		
 		[BeforeClass]
@@ -78,13 +83,13 @@ package test.jccrosby.analytics.segmentio
 		
 		private function _onUserIDIdentifyComplete(event:Event, data:Object):void
 		{
+			_client.removeEventListener(Event.COMPLETE, _onUserIDIdentifyComplete);
 			Assert.assertTrue("testUserIDIdentify", true);
 		}
 		
 		[Test(async, description="SessionID Identify Async")]
 		public function testSessionIDIdentify():void
 		{
-			var sessionID:String = "testUser::" + new Date().dateUTC.toString();
 			var traits:Traits = new Traits();
 			traits.created = new Date();
 			traits.email = "test@domain.com";
@@ -93,7 +98,7 @@ package test.jccrosby.analytics.segmentio
 				var completeHandler:Function = Async.asyncHandler(this, _onSessionIDIdentifyComplete, 1000, {name:"testSessionIDIdentify"}, _handleTimeout);
 				_client.addEventListener(Event.COMPLETE, completeHandler, false, 0, true);
 				
-				_client.identify(sessionID, null, traits, null, new Date());
+				_client.identify(_sessionID, null, traits, null, new Date());
 			}
 			catch(e:Error)
 			{
@@ -103,8 +108,10 @@ package test.jccrosby.analytics.segmentio
 		
 		private function _onSessionIDIdentifyComplete(event:Event, data:Object):void
 		{
+			_client.removeEventListener(Event.COMPLETE, _onSessionIDIdentifyComplete);
 			Assert.assertTrue("testSessionIDIdentify", true);
 		}
+		
 		
 		// ======================================
 		// Test Track
@@ -135,13 +142,13 @@ package test.jccrosby.analytics.segmentio
 		
 		private function _onUserIDTrackComplete(event:Event, data:Object):void
 		{
+			_client.removeEventListener(Event.COMPLETE, _onUserIDTrackComplete);
 			Assert.assertTrue("testUserIDTrack", true);
 		}
 		
 		[Test(async, description="SessionID Track Async")]
 		public function testSessionIDTrack():void
 		{
-			var sessionID:String = "testSession::" + new Date().dateUTC.toString();
 			var properties:Object = {
 				unitTest: true,
 				testName: "testSessionIDTrack",
@@ -153,7 +160,7 @@ package test.jccrosby.analytics.segmentio
 				var completeHandler:Function = Async.asyncHandler(this, _onSessionIDTrackComplete, 1000, {name:"testSessionIDTrack"}, _handleTimeout);
 				_client.addEventListener(Event.COMPLETE, completeHandler, false, 0, true);
 				
-				_client.track("unitTest", properties, null, sessionID, null, new Date());
+				_client.track("unitTest", properties, null, _sessionID, null, new Date());
 			}
 			catch(e:Error)
 			{
@@ -163,7 +170,10 @@ package test.jccrosby.analytics.segmentio
 		
 		private function _onSessionIDTrackComplete(event:Event, data:Object):void
 		{
+			_client.removeEventListener(Event.COMPLETE, _onSessionIDTrackComplete);
 			Assert.assertTrue("testSessionIDTrack", true);
 		}
+		
+		// TODO: Figure out how to test the call queue
 	}
 }

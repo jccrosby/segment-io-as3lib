@@ -7,6 +7,7 @@
     <classEntry path="test.jccrosby.analytics.segmentio.TestContext"/>
     <classEntry path="com.jccrosby.analytics.segmentio.Traits"/>
     <classEntry path="test.jccrosby.analytics.segmentio.TestTraits"/>
+    <classEntry path="test.jccrosby.analytics.segmentio.SegmentIOSuite"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

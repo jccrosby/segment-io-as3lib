@@ -2,7 +2,6 @@ package com.jccrosby.analytics.segmentio
 {
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLLoader;
@@ -11,8 +10,6 @@ package com.jccrosby.analytics.segmentio
 	import flash.net.URLRequestMethod;
 	import flash.system.Security;
 	
-	import mx.collections.ArrayCollection;
-	
 	[Event(name="complete", type="flash.events.Event")]
 	[Event(name="ioError", type="flash.events.IOErrorEvent")]
 	[Event(name="securityError", type="flash.events.SecurityErrorEvent")]
@@ -20,7 +17,7 @@ package com.jccrosby.analytics.segmentio
 	public class AnalyticsClient extends EventDispatcher
 	{
 		private var _secret:String;
-		private var _requestQueue:ArrayCollection;
+		private var _requestQueue:Array;
 		private var _activeRequest:Boolean;
 		private var _loader:URLLoader;
 		
@@ -32,7 +29,7 @@ package com.jccrosby.analytics.segmentio
 				throw new Error("Secret is required.");
 			
 			_secret = secret;
-			_requestQueue = new ArrayCollection();
+			_requestQueue = new Array();
 			_loader = new URLLoader();
 			
 			_loader.addEventListener(Event.COMPLETE, onLoaderComplete);
@@ -56,7 +53,7 @@ package com.jccrosby.analytics.segmentio
 				throw new Error("Either userID or sessionID is required.");
 			
 			var req:URLRequest = _buildTrackRequest(event, properties, userID, sessionID, context, timestamp);
-			_requestQueue.addItem(req);
+			_requestQueue.push(req);
 			_checkQueue();
 		}
 		
@@ -125,7 +122,7 @@ package com.jccrosby.analytics.segmentio
 			var contentType:URLRequestHeader = new URLRequestHeader("Content-Type", "application/json");
 			req.requestHeaders = [contentType];
  			req.data = JSON.stringify(data);
-			req.url = "http://api.segment.io/v1/track";
+			req.url = "https://api.segment.io/v1/track";
 			
 			return req; 
 		}
@@ -135,7 +132,7 @@ package com.jccrosby.analytics.segmentio
 			if(!_activeRequest && _requestQueue.length)
 			{
 				_activeRequest = true;
-				_loader.load(_requestQueue.removeItemAt(0) as URLRequest);
+				_loader.load(_requestQueue.shift() as URLRequest);
 			}
 		}
 		
@@ -146,21 +143,21 @@ package com.jccrosby.analytics.segmentio
 		
 		protected function onLoaderComplete(event:Event):void
 		{
-			trace("Call complete");
+			_activeRequest = false;
 			_checkQueue();
 			dispatchEvent(event.clone());
 		}
 		
 		protected function onLoaderIOError(event:IOErrorEvent):void
 		{
-			trace("IOErrorEvent", event.errorID, event.text);
+			_activeRequest = false;
 			_checkQueue();	
 			dispatchEvent(event.clone());
 		}
 		
 		protected function onLoaderSecurityError(event:SecurityErrorEvent):void
 		{
-			trace("SecurityErrorEvent", event.errorID, event.text);
+			_activeRequest = false;
 			_checkQueue();	
 			dispatchEvent(event.clone());
 		}
