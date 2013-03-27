@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testrun name="" >
-<testsuite  name="Default Test Suite" project="segment-io-lib">
-<testsuite name="test.jccrosby.analytics.segmentio:TestAnalyticsClient" type="testcaseclass">
-<testcase name="testClientCallQueue" classname="test.jccrosby.analytics.segmentio:TestAnalyticsClient"/>
-</testsuite>
-</testsuite>
-<portNumber value="8765" />
-</testrun>
