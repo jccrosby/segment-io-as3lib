@@ -9,14 +9,12 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.jccrosby.analytics.segmentio.TestAnalyticsClient;
-			import org.flexunit.runner.Request;
+			import test.jccrosby.analytics.segmentio.SegmentIOSuite;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				
-				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestAnalyticsClient,["testClientCallQueue"]));
+				testsToRun.push(test.jccrosby.analytics.segmentio.SegmentIOSuite);
 				return testsToRun;
 			}
 			

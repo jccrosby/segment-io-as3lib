@@ -37,33 +37,24 @@ package com.jccrosby.analytics.segmentio
 			_loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onLoaderSecurityError);
 		}
 		
-		public function identify(userID:String=null, sessionID:String=null, traits:Traits=null, context:Context=null, timestamp:Date=null):void
+		public function identify(userID:String,traits:Traits=null, context:Context=null, timestamp:Date=null):void
 		{
-			if(!userID && !sessionID)
-				throw new Error("Either userID or sessionID is required.");
-			
-			var req:URLRequest = _buildIdentifyRequest(userID, sessionID, traits, context, timestamp);
-			_requestQueue.addItem(req);
-			_checkQueue();
-		}
-		
-		public function track(event:String,  properties:Object=null, userID:String=null, sessionID:String=null, context:Context=null, timestamp:Date=null):void
-		{
-			if(!userID && !sessionID)
-				throw new Error("Either userID or sessionID is required.");
-			
-			var req:URLRequest = _buildTrackRequest(event, properties, userID, sessionID, context, timestamp);
+			var req:URLRequest = _buildIdentifyRequest(userID, traits, context, timestamp);
 			_requestQueue.push(req);
 			_checkQueue();
 		}
 		
-		private function _buildIdentifyRequest(userID:String=null, sessionID:String=null, traits:Traits=null, context:Context=null, timestamp:Date=null):URLRequest
+		public function track(userID:String, event:String, properties:Object=null, context:Context=null, timestamp:Date=null):void
+		{			
+			var req:URLRequest = _buildTrackRequest(event, userID, properties, context, timestamp);
+			_requestQueue.push(req);
+			_checkQueue();
+		}
+		
+		private function _buildIdentifyRequest(userID:String, traits:Traits=null, context:Context=null, timestamp:Date=null):URLRequest
 		{
 			var data:Object = {};
 			data.secret = _secret;
-			
-			if(!userID && !sessionID)
-				throw new Error("Either userID or sessionID is required.");
 			
 			if(userID)
 				data.userId = userID
@@ -73,9 +64,6 @@ package com.jccrosby.analytics.segmentio
 			
 			if(timestamp)
 				data.timestamp = timestamp;
-			
-			if(sessionID)
-				data.sessionId = sessionID;
 			
 			if(context)
 				data.context = context;
@@ -90,7 +78,7 @@ package com.jccrosby.analytics.segmentio
 			return req; 
 		}
 		
-		private function _buildTrackRequest(event:String, properties:Object=null, userID:String=null, sessionID:String=null, context:Context=null, timestamp:Date=null):URLRequest
+		private function _buildTrackRequest(userID:String, event:String, properties:Object=null, context:Context=null, timestamp:Date=null):URLRequest
 		{
 			var data:Object = {};
 			
@@ -98,20 +86,13 @@ package com.jccrosby.analytics.segmentio
 			
 			data.secret = _secret;
 			
-			if(!userID && !sessionID)
-				throw new Error("Either userID or sessionID is required.");
-			
-			if(userID)
-				data.userId = userID
+			data.userId = userID
 			
 			if(properties)
 				data.traits = properties;
 			
 			if(timestamp)
 				data.timestamp = timestamp;
-			
-			if(sessionID)
-				data.sessionId = sessionID;
 			
 			if(context)
 				data.context = context;
