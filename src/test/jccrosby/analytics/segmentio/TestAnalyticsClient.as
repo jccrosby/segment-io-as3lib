@@ -107,6 +107,7 @@ package test.jccrosby.analytics.segmentio
 			};
 			
 			var context:Context= new Context();
+			context.googleAnalytics = true;
 			
 			try 
 			{

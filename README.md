@@ -15,11 +15,11 @@ The library mirrors the segment.io [REST API](https://segment.io/api/rest), but 
 	traits.created = new Date();
 	traits.email = "test@domain.com";
 	
-	// For userId
-	client.identify("userID", null, traits, null, new Date());
+	var context:Context = new Context();
+	context.googleAnalytics = true;
 	
-	// For sessionId
-	client.identify(null, "sessionID", traits, null, new Date());
+	// For userId
+	client.identify("userID", traits, context, new Date());
 
 ### Track  
 	var secret:String = "MY_SEGMENT_IO_SECRET";
@@ -31,8 +31,24 @@ The library mirrors the segment.io [REST API](https://segment.io/api/rest), but 
 		testName: "testSessionIDTrack",
 		timeStamp: new Date()
 	};
-	client.track("myEvent", properties, userID, null, null, new Date());
+	var context:Context = new Context();
+	context.googleAnalytics = true;
+	
+	client.track(userID, "myEvent", properties, context, new Date());
 
+## Context & Selecting Providers 
+[Segment.io Context documentation](https://segment.io/docs/methods/identify#choosing-providers)
+ 
+	var context:Context = new Context();
+
+	// Turn on specific providers
+	context.googleAnalytics = true;
+	
+	context.all = true; // "Turns on" all providers (Default is false)
+	
+	// Turn off specific providers
+	context.clicky = false;
+	context.kissMetrics = false;
 
 ## To Do
 [ ] Implement "import"  

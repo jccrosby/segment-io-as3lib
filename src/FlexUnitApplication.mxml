@@ -9,12 +9,23 @@
 			   minWidth="955" minHeight="600" creationComplete="onCreationComplete()">
 	<fx:Script>
 		<![CDATA[
-			import test.jccrosby.analytics.segmentio.SegmentIOSuite;
+			import test.jccrosby.analytics.segmentio.TestTraits;
+			import test.jccrosby.analytics.segmentio.TestAnalyticsClient;
+			import test.jccrosby.analytics.segmentio.TestContext;
+			import org.flexunit.runner.Request;
 			
 			public function currentRunTestSuite():Array
 			{
 				var testsToRun:Array = new Array();
-				testsToRun.push(test.jccrosby.analytics.segmentio.SegmentIOSuite);
+				
+				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestContext,["testGet_providers"]));
+				
+				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestAnalyticsClient,["testAnalyticsClient",
+					"testUserIDIdentify",
+					"testUserIDTrack"]));
+				
+				testsToRun.push(Request.methods(test.jccrosby.analytics.segmentio.TestTraits,["testToJSON",
+					"testAddDynamicProperty"]));
 				return testsToRun;
 			}
 			
